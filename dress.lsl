@@ -1,24 +1,34 @@
 integer channel_constant = 38609;
-list textures = [
-    "huddo: RED", "04287ef5-e44c-438e-c121-77378f2a550f",
-    "huddo: BLUE", "fe306cc3-75ee-911d-721d-a0b6deb441cf",
-    "huddo: GREEN", "a5dcd191-bde1-a694-2bde-b83ffede11f3",
-    "huddo: WHITE", "334fe89c-efe1-2de3-f7d2-ed18697155bc"
-];
+string unique_name = "A Unique Name";
+list sides = ["ALL_SIDES", "1,2,3"];
 
 default {
     state_entry() {
-        integer length = llGetListLength(textures);
-        integer i;
-        for (i = 0; i < length; i += 2) {
-            llListen(channel_constant, llList2String(textures, i), NULL_KEY, llList2String(textures, i));
-        }
+        llListen(channel_constant, "", NULL_KEY, "");
     }
 
     listen(integer channel, string name, key id, string message)
     {
-        integer position;
-        position = llListFindList(textures, [message]);
-        llSetTexture(llList2Key(textures, position + 1), ALL_SIDES);
+        list split = llParseString2List(message, [","], []);
+        integer length = llGetListLength(split);
+        if (length == llGetListLength(sides)+1 && llList2String(split, 0) == unique_name) {
+            integer i;
+            for (i = 1; i < length; i += 1) {
+                string side_texture = llList2String(split, i);
+                list each_side = llParseString2List(llList2String(sides, i-1), [","], []);
+
+                integer side_length = llGetListLength(each_side);
+                integer side_i;
+                for (side_i = 0; side_i < side_length; side_i += 1) {
+                    string one_side;
+                    one_side = llList2String(each_side, side_i);
+                    if (one_side == "ALL_SIDES") {
+                        llSetTexture(side_texture, ALL_SIDES);
+                    } else {
+                        llSetTexture(side_texture, (integer)one_side);
+                    }
+                }
+            }
+        }
     }
 }
