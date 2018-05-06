@@ -54,6 +54,14 @@ face in the list.
 
 ## More-Advanced Usage
 
+### Changing Things Other Than Textures
+Setting a texture with the name `fn:llSetPrimitiveParams` will cause
+all subsequent entries in the texture list to act as if they had been
+sent to the [`llSetPrimitiveParams`](http://wiki.secondlife.com/wiki/LlSetPrimitiveParams) function
+on the "dress" script's object. The list is sent directly, without
+additional processing, so face numbers will need to be included when
+relevant.
+
 ### Setting Textures on Multiple Objects with a Single Button
 In order to change the textures of multiple objects with a single
 button, you can add multiple copies of the `button` script. into the
@@ -70,3 +78,7 @@ interchangeable with the smaller "sets" without requiring the clothing
 be changed. In order to achieve this, ensure the same `unique_name` and
 `channel_constant` are used across all scripts which are meant to be
 compatible.
+
+Note that as a general rule, scripts will only be compatible when the
+"major version number" (number before the decimal point) is the same. If
+the major version is different, scripts may behave unpredictably.
