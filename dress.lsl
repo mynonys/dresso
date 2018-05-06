@@ -30,6 +30,23 @@ list TypedList2List(list typed) {
     return untyped;
 }
 
+list PrimitiveParamsTexture(integer side, string texture) {
+    if (side == ALL_SIDES) {
+        list params;
+
+        integer this_faces = llGetLinkNumberOfSides(LINK_THIS);
+        integer this_face;
+        for (this_face = 0; this_face < this_faces; this_face++) {
+            params += PrimitiveParamsTexture(this_face, texture);
+        }
+
+        return params;
+    }
+
+    list old_params = llGetLinkPrimitiveParams(LINK_THIS, [PRIM_TEXTURE, side]);
+    return [PRIM_TEXTURE, side, texture] + llList2List(old_params, 1, 3);
+}
+
 default {
     state_entry() {
         llListen(channel_constant, "", NULL_KEY, "");
@@ -37,6 +54,7 @@ default {
 
     listen(integer channel, string name, key id, string message)
     {
+        list params;
         list split = llCSV2List(message);
         integer length = llGetListLength(split);
         integer faceLength = llGetListLength(faces);
@@ -59,7 +77,7 @@ default {
                     list fnArguments = llList2List(split, i+1, i+argLength);
                     string fnName = llList2String(fn, 1);
                     if (fnName == "llSetPrimitiveParams") {
-                        llSetLinkPrimitiveParamsFast(LINK_THIS, fnArguments);
+                        params += fnArguments;
                     }
 
                     i = i + argLength;
@@ -74,15 +92,20 @@ default {
                     integer face_i;
                     for (face_i = 0; face_i < face_length; face_i += 1) {
                         string one_face;
+
                         one_face = llList2String(each_face, face_i);
                         if (one_face == "ALL_SIDES") {
-                            llSetTexture(face_texture, ALL_SIDES);
+                            params += PrimitiveParamsTexture(ALL_SIDES, face_texture);
                         } else {
-                            llSetTexture(face_texture, (integer)one_face);
+                            params += PrimitiveParamsTexture((integer)one_face, face_texture);
                         }
                     }
                 }
                 @nextTexture;
+            }
+
+            if (llGetListLength(params) > 0) {
+                llSetLinkPrimitiveParamsFast(LINK_THIS, params);
             }
         }
     }
