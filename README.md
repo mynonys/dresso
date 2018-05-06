@@ -78,3 +78,7 @@ interchangeable with the smaller "sets" without requiring the clothing
 be changed. In order to achieve this, ensure the same `unique_name` and
 `channel_constant` are used across all scripts which are meant to be
 compatible.
+
+Note that as a general rule, scripts will only be compatible when the
+"major version number" (number before the decimal point) is the same. If
+the major version is different, scripts may behave unpredictably.

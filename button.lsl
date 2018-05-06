@@ -1,3 +1,6 @@
+// DRESSO (button) v3.0
+// see https://github.com/mynonys/dresso
+// for updates, instructions, and license information.
 integer channel_constant = 38609;
 string unique_name = "A Unique Name";
 list textures = [

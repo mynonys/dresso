@@ -1,3 +1,6 @@
+// DRESSO (dress) v3.0
+// see https://github.com/mynonys/dresso
+// for updates, instructions, and license information.
 integer channel_constant = 38609;
 string unique_name = "A Unique Name";
 list faces = ["ALL_SIDES", "1,2,3"];
